@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="stylesheet" href="navbar.css">
+    <title>Search Guitars</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background: #f7d9aa;
+        padding: 20px;
+        margin: 0;
+        padding: 40px;
+        display: flex;
+
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+      }
+      label {
+        display: block;
+        margin-top: 10px;
+      }
+      input {
+        margin-bottom: 10px;
+        margin-top: 5px;
+      }
+      button {
+        margin-top: 10px;
+        padding: 10px;
+      }
+      table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+      }
+
+      .guitarInputOne {
+        display: flex;
+        font-weight: bold;
+        gap: 1rem;
+        font-size: larger;
+        margin-bottom: 2rem;
+      }
+      .formButton {
+        background: #f0c14b;
+        color: #333;
+        border: none;
+        padding: 10px 20px;
+
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 18px;
+      }
+
+      .formButton:hover {
+        background: #ddb347;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid black;
+        background-color: white;
+      }
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+      }
+
+      #formBody {
+        gap: 1em;
+      }
+    </style>
+  </head>
+  <body>
+    <ul class="topnav">
+      <li><a  href="index.html">Home</a></li>
+      <li><a  href="about.html">About</a></li>
+      <li><a href="add.html">Add Guitar</a></li>        
+      <li class="right"><a  class="active" href="login.html">Login</a></li>
+  </ul>
+    <div id="formBody">
+      <div class="guitarInputOne">
+        <label for="builder">Builder:</label>
+        <input type="text" id="builder" />
+      </div>
+      <div class="guitarInputOne">
+        <label for="model">Model:</label>
+        <input type="text" id="model" />
+      </div>
+
+      <div class="guitarInputOne">
+        <label for="type">Type:</label>
+        <input type="text" id="type" />
+      </div>
+      <div class="guitarInputOne">
+        <label for="backWood">Back Wood:</label>
+        <input type="text" id="backWood" />
+      </div>
+      <div class="guitarInputOne">
+        <label for="topWood">Top Wood:</label>
+        <input type="text" id="topWood" />
+      </div>
+      <button onClick="search()" class="formButton">Search</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Serial number</th>
+          <th>Builder</th>
+          <th>Model</th>
+          <th>Type</th>
+          <th>Back wood</th>
+          <th>Top wood</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody id="searchResult"></tbody>
+    </table>
+
+    <script>
+      async function search() {
+        let builder = document.getElementById("builder").value;
+        let model = document.getElementById("model").value;
+        let type = document.getElementById("type").value;
+        let backWood = document.getElementById("backWood").value;
+        let topWood = document.getElementById("topWood").value;
+
+        if(!builder){
+          alert("You must put a value for builder")
+          return;
+        }
+
+        if(!type){
+          alert("You must put a value for type")
+          return;
+        }
+
+        
+
+        if(!backWood){
+          alert("You must put a value for backWood")
+          return;
+        }
+
+        if(!topWood){
+          alert("You must put a value for topWood")
+          return;
+        }
+    
+        let query = `builder=${builder}&model=${model}&type=${type}&backWood=${backWood}&topWood=${topWood}`;
+        let url = `https://guitar-inventory-management-latest-bc14.onrender.com/search?${query}`;
+        console.log(url);
+    
+        try {
+          
+          let response = await fetch(url);
+    
+    
+          let guitars = await response.json(); 
+          console.log(guitars);
+    
+          let table = document.getElementById("searchResult");
+          table.innerHTML = ""; 
+    
+          guitars.forEach(guitar => {
+            let row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${guitar.serialNumber}</td>
+              <td>${guitar.builder}</td>
+              <td>${guitar.model}</td>
+              <td>${guitar.type}</td>
+              <td>${guitar.backWood}</td>
+              <td>${guitar.topWood}</td>
+              <td>${guitar.price}</td>
+            `;
+            table.appendChild(row);
+          });
+        } catch (error) {
+          console.error('Fetch error:', error);
+          alert("Something went wrong. Please try again or contact the customer support team. Error: " + error);
+        }
+      }
+    </script>
+    
+  </body>
+</html>

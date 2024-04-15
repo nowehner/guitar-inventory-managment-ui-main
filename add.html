@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Guitar</title>
+    <link rel="stylesheet" href="navbar.css">
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background: #f7d9aa;
+        margin: 0;
+        padding: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      form {
+        background: #fff6e5;
+        padding: 20px;
+        border-radius: 8px;
+      }
+
+      form label {
+        font-size: 18px;
+        color: #333;
+      }
+
+      form input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+      }
+
+      form button {
+        background: #f0c14b;
+        color: #333;
+        border: none;
+        padding: 10px 20px;
+
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 18px;
+      }
+
+      form button:hover {
+        background: #ddb347;
+      }
+
+      .guitarInputOne {
+        display: flex;
+        font-weight: bold;
+        gap: 1rem;
+      }
+
+      #guitarForm {
+        width: 80%;
+      }
+    </style>
+  </head>
+  <body>
+    <ul class="topnav">
+      <li><a  href="index.html">Home</a></li>
+      <li><a  href="about.html">About</a></li>
+      <li><a href="add.html">Add Guitar</a></li>        
+     
+      <li class="right"><a  class="active" href="login.html">Login</a></li>
+  </ul>
+    <form id="guitarForm">
+      <div class="guitarInputOne">
+        <label for="serialNumber">Serial number:</label>
+        <input type="text" class="serialNumber" name="serialNumber" />
+      </div>
+
+      <div class="guitarInputOne">
+        <label for="price">Price:</label>
+        <input type="text" class="price" name="price" />
+      </div>
+
+      <div class="guitarInputOne">
+        <label for="builder">Builder:</label>
+        <input type="text" class="builder" name="builder" />
+      </div>
+
+      <div class="guitarInputOne">
+        <label for="model">Model:</label>
+        <input type="text" class="model" name="model" />
+      </div>
+
+      <div class="guitarInputOne">
+        <label for="type">Type:</label>
+        <input type="text" class="type" name="type" />
+      </div>
+
+      <div class="guitarInputOne">
+        <label for="backWood">Back wood:</label>
+        <input type="text" class="backWood" name="backWood" />
+      </div>
+
+      <div class="guitarInputOne">
+        <label for="topWood">Top wood:</label>
+        <input type="text" class="topWood" name="topWood" />
+      </div>
+
+      <button type="button" onclick="addTheGuitar()">Add the guitar</button>
+    </form>
+
+    <script>
+      let host = "https://guitar-inventory-management-latest-bc14.onrender.com/";
+
+      async function addTheGuitar() {
+        var guitar = {
+          serialNumber: document.querySelector(".serialNumber").value,
+          price: document.querySelector(".price").value,
+          builder: document.querySelector(".builder").value,
+          model: document.querySelector(".model").value,
+          type: document.querySelector(".type").value,
+          backWood: document.querySelector(".backWood").value,
+          topWood: document.querySelector(".topWood").value,
+        };
+
+        var fieldNames = {
+          serialNumber: "Serial number",
+          price: "Price",
+          builder: "Builder",
+          model: "Model",
+          type: "Type",
+          backWood: "Back wood",
+          topWood: "Top wood",
+        };
+
+        for (let key in guitar) {
+          if (guitar[key] === "") {
+            alert(`Please enter a value for ${fieldNames[key]}.`);
+            return;
+          }
+        }
+
+        try {
+          let response = await fetch(host + "add", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              'Authorization': `Bearer ${configuration.token()}`
+              
+            },
+            body: JSON.stringify(guitar),
+          });
+
+          if (response.ok) {
+            let data = await response.json();
+            console.log(data);
+
+            if (data) {
+              alert("The guitar was added to the system!");
+            } else {
+              alert(
+                "Something went wrong. Please try again or contact the customer support team."
+              );
+            }
+          } else {
+            throw new Error("Network ResPonse error");
+          }
+        } catch (error) {
+          console.error(
+            error
+          );
+          alert(
+            "Something went wrong. Please try again or contact the customer support team."
+          );
+        }
+      }
+    </script>
+  </body>
+</html>
